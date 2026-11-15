@@ -1,0 +1,108 @@
+﻿Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebButton.pkg
+Use cWebColumn.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+
+Use centrenadorDataDictionary.dd
+
+Register_Object oZoomEntrenador
+
+Object oSelectEntrenador is a cWebView
+    Set psCaption to "Entrenadores"
+    Set pbShowCaption to False
+    Set piMaxWidth to 1024
+    Set piColumnCount to 6
+    Set peViewType to vtSelect
+    Set psStateViewName to "Entrenadores"
+
+    WebSetResponsive piColumnCount rmTabletPortrait to 3
+
+    Object oEntrenadorDataDictionary is a centrenadorDataDictionary
+        Set Auto_Fill_State to True
+    End_Object
+
+    Set Main_DD to oEntrenadorDataDictionary
+    Set Server to oEntrenadorDataDictionary
+
+    Object oList is a cWebList
+        Set piColumnSpan to 0
+        Set pbServerOnRowClick to True
+        Set pbFillHeight to True
+        Set piSortColumn to 1
+        Set pbShowHeader to True
+        Set pbAllowDeleteRow to True
+
+        WebRegisterPath ntNavigateForward oZoomEntrenador
+
+        Procedure OnRowClick String sRowID
+            Send NavigatePath
+        End_Procedure
+
+        Object oEntrenador_ID is a cWebColumn
+            Entry_Item entrenador.ID
+            Set psCaption to "ID"
+            Set piWidth to 40
+        End_Object
+
+        Object oEntrenador_Nombre is a cWebColumn
+            Entry_Item entrenador.Nombre
+            Set psCaption to "Nombre"
+            Set piWidth to 100
+        End_Object
+
+        Object oEntrenador_Apellido is a cWebColumn
+            Entry_Item entrenador.Apellido
+            Set psCaption to "Apellido"
+            Set piWidth to 100
+        End_Object
+
+        Object oEntrenador_Nacionalidad is a cWebColumn
+            Entry_Item entrenador.Nacionalidad
+            Set psCaption to "Nacionalidad"
+            Set piWidth to 100
+        End_Object
+
+        Object oEntrenador_EquipoID is a cWebColumn
+            Entry_Item entrenador.EquipoID
+            Set psCaption to "ID de equipo"
+            Set piWidth to 100
+        End_Object
+
+    End_Object
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSearch is a cWebMenuItem
+            Set psCaption to "Buscar"
+            Set psCSSClass to "WebPromptMenuItem"
+
+            Procedure OnClick
+                Send Search of oList
+            End_Procedure
+        End_Object
+
+        Object oNewButton is a cWebMenuItem
+            Set psCaption to "Nuevo"
+            Set psCSSClass to "WebClearMenuItem"
+
+            WebRegisterPath ntNavigateForward oZoomEntrenador Self "NewEntrenador"
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bNewRecord
+            End_Procedure
+        End_Object
+
+    End_Object
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Handle hoInvokingView Handle hoInvokingObject
+        Send SetBreadcrumbCaption "Entrenadores"
+        Send SetHeaderCaption "Entrenadores"
+    End_Procedure
+
+End_Object
