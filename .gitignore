@@ -1,0 +1,13 @@
+# Credenciales de la conexion a MySQL (no subir a GitHub)
+Data/DFConnId.ini
+# Logs y compilados
+*.log
+Programs/*.exe
+Programs/*.dll
+Programs/*.vd
+Programs/*.dfo
+Programs/*.dfa
+Programs/*.dfi
+*.tmp
+# Archivo local del IDE (bloqueado mientras Studio esta abierto)
+IdeSrc/*.loc
