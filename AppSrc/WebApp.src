@@ -131,6 +131,9 @@ Object oWebApp is a cWebApp
     Use Login.wo
     Use WebResourceManager.wo
     
+    Use SelectEntrenador.wo
+    Use ZoomEntrenador.wo
+    
     Use Dashboard.wo
     Set phoDefaultView to oDashboard
 
