@@ -1,0 +1,108 @@
+﻿Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebButton.pkg
+Use cWebColumn.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+
+Use cligaDataDictionary.dd
+
+Register_Object oZoomLiga
+
+Object oSelectLiga is a cWebView
+    Set psCaption to "Ligas"
+    Set pbShowCaption to False
+    Set piMaxWidth to 1024
+    Set piColumnCount to 6
+    Set peViewType to vtSelect
+    Set psStateViewName to "Ligas"
+
+    WebSetResponsive piColumnCount rmTabletPortrait to 3
+
+    Object oLigaDataDictionary is a cligaDataDictionary
+        Set Auto_Fill_State to True
+    End_Object
+
+    Set Main_DD to oLigaDataDictionary
+    Set Server to oLigaDataDictionary
+
+    Object oList is a cWebList
+        Set piColumnSpan to 0
+        Set pbServerOnRowClick to True
+        Set pbFillHeight to True
+        Set piSortColumn to 1
+        Set pbShowHeader to True
+        Set pbAllowDeleteRow to True
+
+        WebRegisterPath ntNavigateForward oZoomLiga
+
+        Procedure OnRowClick String sRowID
+            Send NavigatePath
+        End_Procedure
+
+        Object oLiga_ID is a cWebColumn
+            Entry_Item liga.ID
+            Set psCaption to "ID"
+            Set piWidth to 40
+        End_Object
+
+        Object oLiga_Nombre is a cWebColumn
+            Entry_Item liga.Nombre
+            Set psCaption to "Nombre"
+            Set piWidth to 100
+        End_Object
+
+        Object oLiga_Pais is a cWebColumn
+            Entry_Item liga.Pais
+            Set psCaption to "Pais"
+            Set piWidth to 100
+        End_Object
+
+        Object oLiga_Equipos is a cWebColumn
+            Entry_Item liga.Equipos
+            Set psCaption to "Equipos"
+            Set piWidth to 100
+        End_Object
+
+        Object oLiga_EquiposMax is a cWebColumn
+            Entry_Item liga.EquiposMax
+            Set psCaption to "Equipos maximos"
+            Set piWidth to 100
+        End_Object
+
+    End_Object
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSearch is a cWebMenuItem
+            Set psCaption to "Buscar"
+            Set psCSSClass to "WebPromptMenuItem"
+
+            Procedure OnClick
+                Send Search of oList
+            End_Procedure
+        End_Object
+
+        Object oNewButton is a cWebMenuItem
+            Set psCaption to "Nuevo"
+            Set psCSSClass to "WebClearMenuItem"
+
+            WebRegisterPath ntNavigateForward oZoomLiga Self "NewLiga"
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bNewRecord
+            End_Procedure
+        End_Object
+
+    End_Object
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Handle hoInvokingView Handle hoInvokingObject
+        Send SetBreadcrumbCaption "Ligas"
+        Send SetHeaderCaption "Ligas"
+    End_Procedure
+
+End_Object
