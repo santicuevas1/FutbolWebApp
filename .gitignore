@@ -11,3 +11,9 @@ Programs/*.dfi
 *.tmp
 # Archivo local del IDE (bloqueado mientras Studio esta abierto)
 IdeSrc/*.loc
+*.prn
+*.err
+*.dbg
+*.cch
+*.dep
+*.manifest

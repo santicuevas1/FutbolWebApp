@@ -1,0 +1,167 @@
+﻿Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebForm.pkg
+Use cWebButton.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+Use cWebGroup.pkg
+
+Use cjugadorDataDictionary.dd
+
+Object oZoomJugador is a cWebView
+    Set psCaption to "Jugador"
+    Set pbShowCaption to False
+    Set piMaxWidth to 1024
+    Set peViewType to vtZoom
+    Set Verify_Save_msg to 0
+    Set psStateViewName to "Jugador"
+
+    Object oJugadorDataDictionary is a cjugadorDataDictionary
+    End_Object
+
+    Set Main_DD to oJugadorDataDictionary
+    Set Server to oJugadorDataDictionary
+
+    Object oWebMainPanel is a cWebPanel
+        Set piColumnCount to 12
+
+        WebSetResponsive piColumnCount rmMobilePortrait to 6
+        WebSetResponsive piColumnCount rmMobileLandscape to 9
+
+        Object oWebGroup1 is a cWebGroup
+            Set piColumnCount to 12
+            Set piColumnSpan to 6
+            Set pbShowBorder to False
+            Set pbShowCaption to False
+
+            Object oJugador_ID is a cWebForm
+                Entry_Item jugador.ID
+                Set piColumnSpan to 12
+                Set psLabel to "ID"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+            End_Object
+
+            Object oJugador_Nombre is a cWebForm
+                Entry_Item jugador.Nombre
+                Set piColumnSpan to 12
+                Set psLabel to "Nombre"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+            End_Object
+
+            Object oJugador_Apellido is a cWebForm
+                Entry_Item jugador.Apellido
+                Set piColumnSpan to 12
+                Set psLabel to "Apellido"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+            End_Object
+
+            Object oJugador_Nacionalidad is a cWebForm
+                Entry_Item jugador.Nacionalidad
+                Set piColumnSpan to 12
+                Set psLabel to "Nacionalidad"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+            End_Object
+
+            Object oJugador_EquipoID is a cWebForm
+                Entry_Item jugador.EquipoID
+                Set piColumnSpan to 12
+                Set psLabel to "ID de equipo"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+            End_Object
+
+        End_Object
+    End_Object
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSaveBtn is a cWebMenuItem
+            Set psCaption to "Guardar"
+            Set psCSSClass to "WebSaveMenuItem"
+
+            Procedure OnClick
+                Send Request_Save
+            End_Procedure
+        End_Object
+
+        Object oEditBtn is a cWebMenuItem
+            Set psCaption to "Editar"
+            Set psCSSClass to "WebEditMenuItem"
+
+            Procedure OnClick
+                Send ChangeEditMode True
+                Send SetActionButtons
+            End_Procedure
+        End_Object
+
+        Object oDeleteBtn is a cWebMenuItem
+            Set psCaption to "Eliminar"
+            Set psCSSClass to "WebDeleteMenuItem"
+            Set peActionDisplay to adMenu
+
+            Procedure OnClick
+                Send Request_Delete
+            End_Procedure
+        End_Object
+
+        Object oCancelChangesBtn is a cWebMenuItem
+            Set psCaption to "Deshacer cambios"
+            Set peActionDisplay to adMenu
+
+            Procedure OnClick
+                Send RefreshRecord
+            End_Procedure
+        End_Object
+
+    End_Object
+
+    Procedure SetActionButtons
+        tWebNavigateData NavigateData
+        Boolean bHasRecord
+        Handle hoDD
+
+        Get Server to hoDD
+        Get GetNavigateData to NavigateData
+        Get HasRecord of hoDD to bHasRecord
+
+        WebSet pbRender of oEditBtn to False
+        WebSet pbRender of oSaveBtn to False
+        WebSet pbRender of oCancelChangesBtn to False
+        WebSet pbRender of oDeleteBtn to False
+
+        If (NavigateData.bReadOnly) Begin
+            WebSet pbRender of oEditBtn to True
+        End
+        Else Begin
+            WebSet pbRender of oSaveBtn to True
+            WebSet pbRender of oCancelChangesBtn to True
+            WebSet pbRender of oDeleteBtn to bHasRecord
+        End
+    End_Procedure
+
+    Procedure OnViewSaved Handle hoDDO Boolean bChanged
+        Send NavigateClose Self
+    End_Procedure
+
+    Procedure OnViewDeleted Handle hoDDO
+        Send NavigateClose Self
+    End_Procedure
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Handle hoInvokingView Handle hoInvokingObject
+        Boolean bHasRecord
+        Get HasRecord of oJugadorDataDictionary to bHasRecord
+        If bHasRecord Begin
+            Send SetBreadcrumbCaption (Trim(jugador.Nombre))
+        End
+        Else Begin
+            Send SetBreadcrumbCaption "Nuevo Jugador"
+        End
+
+        Send SetActionButtons
+    End_Procedure
+
+End_Object

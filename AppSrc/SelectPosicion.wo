@@ -1,0 +1,90 @@
+﻿Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebButton.pkg
+Use cWebColumn.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+
+Use cposicionDataDictionary.dd
+
+Register_Object oZoomPosicion
+
+Object oSelectPosicion is a cWebView
+    Set psCaption to "Posiciones"
+    Set pbShowCaption to False
+    Set piMaxWidth to 1024
+    Set piColumnCount to 6
+    Set peViewType to vtSelect
+    Set psStateViewName to "Posiciones"
+
+    WebSetResponsive piColumnCount rmTabletPortrait to 3
+
+    Object oPosicionDataDictionary is a cposicionDataDictionary
+        Set Auto_Fill_State to True
+    End_Object
+
+    Set Main_DD to oPosicionDataDictionary
+    Set Server to oPosicionDataDictionary
+
+    Object oList is a cWebList
+        Set piColumnSpan to 0
+        Set pbServerOnRowClick to True
+        Set pbFillHeight to True
+        Set piSortColumn to 1
+        Set pbShowHeader to True
+        Set pbAllowDeleteRow to True
+
+        WebRegisterPath ntNavigateForward oZoomPosicion
+
+        Procedure OnRowClick String sRowID
+            Send NavigatePath
+        End_Procedure
+
+        Object oPosicion_ID is a cWebColumn
+            Entry_Item posicion.ID
+            Set psCaption to "ID"
+            Set piWidth to 40
+        End_Object
+
+        Object oPosicion_Nombre is a cWebColumn
+            Entry_Item posicion.Nombre
+            Set psCaption to "Nombre"
+            Set piWidth to 100
+        End_Object
+
+    End_Object
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSearch is a cWebMenuItem
+            Set psCaption to "Buscar"
+            Set psCSSClass to "WebPromptMenuItem"
+
+            Procedure OnClick
+                Send Search of oList
+            End_Procedure
+        End_Object
+
+        Object oNewButton is a cWebMenuItem
+            Set psCaption to "Nuevo"
+            Set psCSSClass to "WebClearMenuItem"
+
+            WebRegisterPath ntNavigateForward oZoomPosicion Self "NewPosicion"
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bNewRecord
+            End_Procedure
+        End_Object
+
+    End_Object
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Handle hoInvokingView Handle hoInvokingObject
+        Send SetBreadcrumbCaption "Posiciones"
+        Send SetHeaderCaption "Posiciones"
+    End_Procedure
+
+End_Object
