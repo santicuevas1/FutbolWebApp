@@ -14,3 +14,6 @@ IdeSrc/*.loc
 *.prn
 *.err
 *.dbg
+*.cch
+*.dep
+*.manifest
