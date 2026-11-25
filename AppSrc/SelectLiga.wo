@@ -37,7 +37,15 @@ Object oSelectLiga is a cWebView
         WebRegisterPath ntNavigateForward oZoomLiga
 
         Procedure OnRowClick String sRowID
-            Send NavigatePath
+            tWebNavigateData NavigateData
+            Get GetNavigateData to NavigateData
+            If (NavigateData.eNavigateType = nfFromChild) Begin
+                // Invocado desde el prompt de un hijo: se devuelve la fila elegida
+                Send NavigateClose Self
+            End
+            Else Begin
+                Send NavigatePath
+            End
         End_Procedure
 
         Object oLiga_ID is a cWebColumn
