@@ -5,8 +5,14 @@ Use cWebButton.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebGroup.pkg
+Use cWebList.pkg
+Use cWebColumn.pkg
 
 Use cligaDataDictionary.dd
+Use cequipoDataDictionary.dd
+
+Register_Object oSelectEquipo
+Register_Object oZoomEquipo
 
 Object oZoomLiga is a cWebView
     Set psCaption to "Liga"
@@ -17,6 +23,12 @@ Object oZoomLiga is a cWebView
     Set psStateViewName to "Liga"
 
     Object oLigaDataDictionary is a cligaDataDictionary
+    End_Object
+
+    // DDO hijo constreñido a la liga actual (para la lista embebida)
+    Object oEquipoDataDictionary is a cequipoDataDictionary
+        Set DDO_Server to oLigaDataDictionary
+        Set Constrain_file to liga.File_Number
     End_Object
 
     Set Main_DD to oLigaDataDictionary
@@ -75,6 +87,34 @@ Object oZoomLiga is a cWebView
             End_Object
 
         End_Object
+
+        // 2o: en vez del boton, los equipos de la liga dentro del propio Zoom
+        Object oEquiposLista is a cWebList
+            Set Server to oEquipoDataDictionary
+            Set piColumnSpan to 12
+            Set pbFillHeight to False
+            Set piHeight to 200
+            Set pbShowHeader to True
+            Set pbServerOnRowClick to True
+
+            WebRegisterPath ntNavigateForward oZoomEquipo
+
+            Procedure OnRowClick String sRowID
+                Send NavigatePath
+            End_Procedure
+
+            Object oEquiposLista_ID is a cWebColumn
+                Entry_Item equipo.ID
+                Set psCaption to "ID"
+                Set piWidth to 40
+            End_Object
+
+            Object oEquiposLista_Nombre is a cWebColumn
+                Entry_Item equipo.Nombre
+                Set psCaption to "Nombre"
+                Set piWidth to 100
+            End_Object
+        End_Object
     End_Object
 
     Object oActionGroup is a cWebMenuGroup
@@ -117,6 +157,17 @@ Object oZoomLiga is a cWebView
             End_Procedure
         End_Object
 
+        // 1o: boton que muestra los equipos de esta liga (nfFromParent -> SelectEquipo constreñido)
+        Object oEquiposBtn is a cWebMenuItem
+            Set psCaption to "Ver equipos"
+
+            WebRegisterPath ntNavigateForward oSelectEquipo
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+        End_Object
+
     End_Object
 
     Procedure SetActionButtons
@@ -132,6 +183,7 @@ Object oZoomLiga is a cWebView
         WebSet pbRender of oSaveBtn to False
         WebSet pbRender of oCancelChangesBtn to False
         WebSet pbRender of oDeleteBtn to False
+        WebSet pbRender of oEquiposBtn to bHasRecord
 
         If (NavigateData.bReadOnly) Begin
             WebSet pbRender of oEditBtn to True
