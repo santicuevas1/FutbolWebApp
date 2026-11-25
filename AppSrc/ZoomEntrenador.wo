@@ -6,7 +6,10 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebGroup.pkg
 
+Use cequipoDataDictionary.dd
 Use centrenadorDataDictionary.dd
+
+Register_Object oSelectEquipo
 
 Object oZoomEntrenador is a cWebView
     Set psCaption to "Entrenador"
@@ -16,7 +19,11 @@ Object oZoomEntrenador is a cWebView
     Set Verify_Save_msg to 0
     Set psStateViewName to "Entrenador"
 
+    Object oEquipoDataDictionary is a cequipoDataDictionary
+    End_Object
+
     Object oEntrenadorDataDictionary is a centrenadorDataDictionary
+        Set DDO_Server to oEquipoDataDictionary
     End_Object
 
     Set Main_DD to oEntrenadorDataDictionary
@@ -72,6 +79,21 @@ Object oZoomEntrenador is a cWebView
                 Set psLabel to "ID de equipo"
                 Set peLabelAlign to alignLeft
                 Set peLabelPosition to lpTop
+            End_Object
+
+            Object oEquipo_Nombre is a cWebForm
+                Entry_Item equipo.Nombre
+                Set piColumnSpan to 12
+                Set psLabel to "Equipo"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+                Set pbPromptButton to True
+
+                WebRegisterPath ntNavigateForward oSelectEquipo
+
+                Procedure OnPrompt
+                    Send NavigatePath
+                End_Procedure
             End_Object
 
         End_Object

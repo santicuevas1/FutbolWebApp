@@ -6,7 +6,11 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebGroup.pkg
 
+Use cequipoDataDictionary.dd
 Use cjugadorDataDictionary.dd
+
+Register_Object oSelectEquipo
+Register_Object oSelectPosicion
 
 Object oZoomJugador is a cWebView
     Set psCaption to "Jugador"
@@ -16,7 +20,11 @@ Object oZoomJugador is a cWebView
     Set Verify_Save_msg to 0
     Set psStateViewName to "Jugador"
 
+    Object oEquipoDataDictionary is a cequipoDataDictionary
+    End_Object
+
     Object oJugadorDataDictionary is a cjugadorDataDictionary
+        Set DDO_Server to oEquipoDataDictionary
     End_Object
 
     Set Main_DD to oJugadorDataDictionary
@@ -74,6 +82,21 @@ Object oZoomJugador is a cWebView
                 Set peLabelPosition to lpTop
             End_Object
 
+            Object oEquipo_Nombre is a cWebForm
+                Entry_Item equipo.Nombre
+                Set piColumnSpan to 12
+                Set psLabel to "Equipo"
+                Set peLabelAlign to alignLeft
+                Set peLabelPosition to lpTop
+                Set pbPromptButton to True
+
+                WebRegisterPath ntNavigateForward oSelectEquipo
+
+                Procedure OnPrompt
+                    Send NavigatePath
+                End_Procedure
+            End_Object
+
         End_Object
     End_Object
 
@@ -114,6 +137,17 @@ Object oZoomJugador is a cWebView
 
             Procedure OnClick
                 Send RefreshRecord
+            End_Procedure
+        End_Object
+
+        // nfUndefined: jugador y posicion solo se relacionan a traves de jugadorposicion
+        Object oPosicionesBtn is a cWebMenuItem
+            Set psCaption to "Posiciones"
+
+            WebRegisterPath ntNavigateForward oSelectPosicion
+
+            Procedure OnClick
+                Send NavigatePath
             End_Procedure
         End_Object
 
